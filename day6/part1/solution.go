@@ -1,6 +1,8 @@
 package part1
 
-import "github.com/bope/adventofcode2019-go/day6"
+import (
+	"github.com/bope/adventofcode2019-go/day6"
+)
 
 func Solution(input [][2]string) int {
 	nodes := make(map[string]*day6.Node)

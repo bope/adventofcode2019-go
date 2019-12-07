@@ -1,10 +1,10 @@
 package day6
 
-import "io"
-
-import "io/ioutil"
-
-import "strings"
+import (
+	"io"
+	"io/ioutil"
+	"strings"
+)
 
 func Parse(r io.Reader) ([][2]string, error) {
 	data, err := ioutil.ReadAll(r)
