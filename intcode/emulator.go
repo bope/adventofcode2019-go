@@ -92,6 +92,15 @@ func (e *Emulator) Run() error {
 	return nil
 }
 
+func (e *Emulator) runOp(f func([]*int), count int, modes [3]int) error {
+	params, err := e.params(count, modes)
+	if err != nil {
+		return err
+	}
+	f(params)
+	return nil
+}
+
 func (e *Emulator) Step() error {
 	op, modes := ParseInstruction(e.memory[e.ptr])
 	e.ptr++
@@ -101,23 +110,23 @@ func (e *Emulator) Step() error {
 	case 99:
 		e.running = false
 	case 1:
-		err = e.add(modes)
+		err = e.runOp(e.add, 3, modes)
 	case 2:
-		err = e.mul(modes)
+		err = e.runOp(e.mul, 3, modes)
 	case 3:
-		err = e.input(modes)
+		err = e.runOp(e.input, 1, modes)
 	case 4:
-		err = e.output(modes)
+		err = e.runOp(e.output, 1, modes)
 	case 5:
-		err = e.jumptrue(modes)
+		err = e.runOp(e.jumptrue, 2, modes)
 	case 6:
-		err = e.jumpfalse(modes)
+		err = e.runOp(e.jumpfalse, 2, modes)
 	case 7:
-		err = e.lessthan(modes)
+		err = e.runOp(e.lessthan, 3, modes)
 	case 8:
-		err = e.equals(modes)
+		err = e.runOp(e.equals, 3, modes)
 	case 9:
-		err = e.rel(modes)
+		err = e.runOp(e.rel, 1, modes)
 	default:
 		err = fmt.Errorf("invalid opcode: %d", op)
 	}
@@ -125,98 +134,53 @@ func (e *Emulator) Step() error {
 	return err
 }
 
-func (e *Emulator) add(modes [3]int) error {
-	params, err := e.params(3, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) add(params []*int) {
 	r := *params[0] + *params[1]
 	*params[2] = r
-	return nil
 }
 
-func (e *Emulator) mul(modes [3]int) error {
-	params, err := e.params(3, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) mul(params []*int) {
 	r := *params[0] * *params[1]
 	*params[2] = r
-	return nil
 }
 
-func (e *Emulator) input(modes [3]int) error {
-	param, err := e.params(1, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) input(params []*int) {
 	r := <-e.Input
-	*param[0] = r
-	return nil
+	*params[0] = r
 }
 
-func (e *Emulator) output(modes [3]int) error {
-	params, err := e.params(1, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) output(params []*int) {
 	e.Output <- *params[0]
-	return nil
 }
 
-func (e *Emulator) jumptrue(modes [3]int) error {
-	params, err := e.params(2, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) jumptrue(params []*int) {
 	if *params[0] != 0 {
 		e.ptr = *params[1]
 	}
-	return nil
 }
 
-func (e *Emulator) jumpfalse(modes [3]int) error {
-	params, err := e.params(2, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) jumpfalse(params []*int) {
 	if *params[0] == 0 {
 		e.ptr = *params[1]
 	}
-	return nil
 }
 
-func (e *Emulator) lessthan(modes [3]int) error {
-	params, err := e.params(3, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) lessthan(params []*int) {
 	if *params[0] < *params[1] {
 		*params[2] = 1
 	} else {
 		*params[2] = 0
 	}
-	return nil
 }
 
-func (e *Emulator) equals(modes [3]int) error {
-	params, err := e.params(3, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) equals(params []*int) {
 	if *params[0] == *params[1] {
 		*params[2] = 1
 	} else {
 		*params[2] = 0
 	}
-	return nil
 }
 
-func (e *Emulator) rel(modes [3]int) error {
-	params, err := e.params(1, modes)
-	if err != nil {
-		return err
-	}
+func (e *Emulator) rel(params []*int) {
 	e.rptr = e.rptr + (*params[0])
-	return nil
 }
