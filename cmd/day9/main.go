@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bope/adventofcode2019-go/day7/part1"
-	"github.com/bope/adventofcode2019-go/day7/part2"
+	"github.com/bope/adventofcode2019-go/day9/part1"
 	"github.com/bope/adventofcode2019-go/intcode"
 )
 
@@ -19,16 +18,16 @@ func main() {
 
 	copy(program_cpy, program)
 
-	ret := part1.Solution(program_cpy)
+	ret, err := part1.Solution(program_cpy, []int{1})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("part1: %d\n", ret)
+	fmt.Printf("part1: %d\n", ret[len(ret)-1])
 
-	ret = part2.Solution(program_cpy)
+	ret, err = part1.Solution(program_cpy, []int{2})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("part2: %d\n", ret)
+	fmt.Printf("part2: %d\n", ret[len(ret)-1])
 
 }

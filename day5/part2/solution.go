@@ -1,14 +1,41 @@
 package part2
 
 import (
-	"github.com/bope/adventofcode2019-go/day5"
+	"github.com/bope/adventofcode2019-go/intcode"
+	"sync"
 )
 
 func Solution(program, input []int) (int, error) {
-	e := day5.NewEmulator(program, input)
-	output, err := e.Run()
-	if err != nil {
+	inputc := make(chan int)
+	outputc := make(chan int)
+	output := make([]int, 0)
+	var wg sync.WaitGroup
+	e := intcode.New(program, inputc, outputc)
+
+	wg.Add(1)
+	go func() {
+		for _, i := range input {
+			inputc <- i
+		}
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		for o := range outputc {
+			output = append(output, o)
+		}
+		wg.Done()
+	}()
+
+	if err := e.Run(); err != nil {
 		return 0, err
 	}
+
+	close(inputc)
+	close(outputc)
+
+	wg.Wait()
+
 	return output[len(output)-1], nil
 }

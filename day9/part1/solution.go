@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-func Solution(program, input []int) (int, error) {
+func Solution(program, input []int) ([]int, error) {
 	inputc := make(chan int)
 	outputc := make(chan int)
 	output := make([]int, 0)
@@ -29,12 +29,12 @@ func Solution(program, input []int) (int, error) {
 	}()
 
 	if err := e.Run(); err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	close(inputc)
 	close(outputc)
 
 	wg.Wait()
-	return output[len(output)-1], nil
+	return output, nil
 }

@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bope/adventofcode2019-go/day5"
+	"github.com/bope/adventofcode2019-go/intcode"
 	"github.com/bope/adventofcode2019-go/day5/part1"
 	"github.com/bope/adventofcode2019-go/day5/part2"
 )
 
 func main() {
-	program, err := day5.Parse(os.Stdin)
+	program, err := intcode.Parse(os.Stdin)
 	program_cpy := make([]int, len(program))
 
 	if err != nil {

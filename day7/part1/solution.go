@@ -1,12 +1,14 @@
 package part1
 
 import (
-	"github.com/bope/adventofcode2019-go/day7"
 	"sync"
+
+	"github.com/bope/adventofcode2019-go/day7"
+	"github.com/bope/adventofcode2019-go/intcode"
 )
 
 func run_with_phases(program, phases []int) int {
-	emulators := make([]*day7.Emulator, len(phases))
+	emulators := make([]*intcode.Emulator, len(phases))
 
 	for i, phase := range phases {
 		p := make([]int, len(program))
@@ -20,7 +22,7 @@ func run_with_phases(program, phases []int) int {
 		}
 		output := make(chan int, 2)
 
-		emulators[i] = day7.NewEmulator(p, input, output)
+		emulators[i] = intcode.New(p, input, output)
 		input <- phase
 	}
 
@@ -28,7 +30,7 @@ func run_with_phases(program, phases []int) int {
 	var wg sync.WaitGroup
 	for _, e := range emulators {
 		wg.Add(1)
-		go func(e *day7.Emulator) {
+		go func(e *intcode.Emulator) {
 			defer func() {
 				wg.Done()
 			}()

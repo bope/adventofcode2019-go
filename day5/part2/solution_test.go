@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bope/adventofcode2019-go/day5"
+	"github.com/bope/adventofcode2019-go/intcode"
 )
 
 type testCase struct {
@@ -36,7 +36,7 @@ func TestSolution(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		program, err := day5.Parse(strings.NewReader(test.program))
+		program, err := intcode.Parse(strings.NewReader(test.program))
 
 		if err != nil {
 			t.Errorf("parse error: %s", err.Error())
