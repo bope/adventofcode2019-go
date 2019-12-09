@@ -135,18 +135,15 @@ func (e *Emulator) Step() error {
 }
 
 func (e *Emulator) add(params []*int) {
-	r := *params[0] + *params[1]
-	*params[2] = r
+	*params[2] = *params[0] + *params[1]
 }
 
 func (e *Emulator) mul(params []*int) {
-	r := *params[0] * *params[1]
-	*params[2] = r
+	*params[2] = *params[0] * *params[1]
 }
 
 func (e *Emulator) input(params []*int) {
-	r := <-e.Input
-	*params[0] = r
+	*params[0] = <-e.Input
 }
 
 func (e *Emulator) output(params []*int) {
